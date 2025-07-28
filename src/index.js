@@ -23,13 +23,14 @@ connectDB()
     // Create HTTP server
     const server = http.createServer(app);
     const PORT = process.env.PORT || 5000;
-    const allowedOrigin =  "https://order-frontend-beta.vercel.app/"; 
+    const allowedOrigin =
+      ["https://order-frontend-beta.vercel.app", "http://localhost:3000"]; 
 
 // Initialize socket.io server
 const io = new Server(server, {
   cors: {
-    origin:
-       "https://order-frontend-beta.vercel.app/", 
+    origin:[
+      "https://order-frontend-beta.vercel.app" , "http://localhost:3000"],
     methods: ["GET", "POST", "PUT", "DELETE"],
   },
 });
