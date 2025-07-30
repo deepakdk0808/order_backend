@@ -1,4 +1,5 @@
 import Customer from "../models/customer.js";
+import { exportCustomerOrdersToCSV } from "../utils/csvExporter.js";
 
 // Admin: Get all customers
 export const getAllCustomers = async (req, res) => {
@@ -133,6 +134,36 @@ export const deleteCustomer = async (req, res) => {
     res
       .status(200)
       .json({ success: true, message: "Customer deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+//CSVexporter
+export const exportCustomerCSV = async (req, res) => {
+  try {
+    const customer = await Customer.findById(req.params.id)
+      .select("-password")
+      .populate({
+        path: "orders",
+        populate: {
+          path: "items.inventoryItem",
+          model: "Inventory",
+          select: "name price description imageUrl",
+        },
+      });
+
+    if (!customer) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Customer not found" });
+    }
+
+    const csv = exportCustomerOrdersToCSV(customer); // new util function
+    res.header("Content-Type", "text/csv");
+    res.attachment(`customer_${customer._id}_orders.csv`);
+    return res.send(csv);
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

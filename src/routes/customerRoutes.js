@@ -7,6 +7,7 @@ import {
   getCustomerById,
   updateCustomer,
   deleteCustomer,
+  exportCustomerCSV,
 } from "../controllers/customerController.js";
 import { authenticate, authorizeRoles } from "../middlewares/middleware.js";
 
@@ -24,5 +25,6 @@ router.delete("/me", authenticate, deleteMyProfile);
 router.get("/:id", authenticate, authorizeRoles("admin"), getCustomerById);
 router.put("/:id", authenticate, authorizeRoles("admin"), updateCustomer);
 router.delete("/:id", authenticate, authorizeRoles("admin"), deleteCustomer);
+router.get("/:id/export-csv", authenticate, authorizeRoles("admin"), exportCustomerCSV);
 
 export default router;
